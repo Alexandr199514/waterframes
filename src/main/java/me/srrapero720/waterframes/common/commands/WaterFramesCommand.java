@@ -27,7 +27,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.server.command.EnumArgument;
+import net.neoforged.neoforge.server.command.EnumArgument;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
@@ -35,6 +35,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static me.srrapero720.waterframes.WaterFrames.LOGGER;
+
+import java.util.function.Supplier;
 
 import java.util.function.Supplier;
 

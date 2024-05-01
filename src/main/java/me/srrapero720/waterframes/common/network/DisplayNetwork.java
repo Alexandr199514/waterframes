@@ -13,31 +13,31 @@ import team.creative.creativecore.common.network.CreativePacket;
 import static me.srrapero720.waterframes.WaterFrames.LOGGER;
 
 public class DisplayNetwork {
-    public static final CreativeNetwork DATA = new CreativeNetwork(1, LOGGER, new ResourceLocation(WaterFrames.ID, "data"));
-    public static final CreativeNetwork CONTROL = new CreativeNetwork(1, LOGGER, new ResourceLocation(WaterFrames.ID, "control"));
+    public static final CreativeNetwork DATA_NET = new CreativeNetwork(1, LOGGER, new ResourceLocation(WaterFrames.ID, "data"));
+    public static final CreativeNetwork CONTROL_NET = new CreativeNetwork(1, LOGGER, new ResourceLocation(WaterFrames.ID, "control"));
 
     public static void init() {
 
     }
 
     public static void sendClient(CreativePacket packet, Level level, BlockPos pos) {
-        DATA.sendToClient(packet, level, pos);
+        DATA_NET.sendToClient(packet, level, pos);
     }
 
     public static void sendClient(CreativePacket packet, ServerPlayer player) {
-        DATA.sendToClient(packet, player);
+        DATA_NET.sendToClient(packet, player);
     }
 
     public static void sendServer(CreativePacket packet) {
-        DATA.sendToServer(packet);
+        DATA_NET.sendToServer(packet);
     }
 
     public static void sendClient(DisplayDataPacket packet, DisplayTile tile) {
-        DATA.sendToClient(packet, tile.getLevel().getChunkAt(packet.pos));
+        DATA_NET.sendToClient(packet, tile.getLevel().getChunkAt(packet.pos));
     }
 
     public static void sendServer(DisplayDataPacket packet) {
-        DATA.sendToServer(packet);
+        DATA_NET.sendToServer(packet);
     }
 
     public static void sendClient(DisplayControlPacket packet, DisplayTile tile) {
@@ -45,10 +45,10 @@ public class DisplayNetwork {
             packet.bounce = false;
             packet.execute(tile, false);
         }
-        CONTROL.sendToClient(packet, tile.getLevel().getChunkAt(packet.pos));
+        CONTROL_NET.sendToClient(packet, tile.getLevel().getChunkAt(packet.pos));
     }
 
     public static void sendServer(DisplayControlPacket packet) {
-        CONTROL.sendToServer(packet);
+        CONTROL_NET.sendToServer(packet);
     }
 }

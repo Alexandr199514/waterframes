@@ -68,7 +68,7 @@ public class RenderCore {
         builder.vertex(pose.last().pose(), box.get(corner.x), box.get(corner.y), box.get(corner.z))
                 .uv(corner.isFacing(face.getTexU()) != flipX ? 1 : 0, corner.isFacing(face.getTexV()) != flipY ? 1 : 0)
                 .color(r, g, b, a)
-                .normal(pose.last().normal(), normal.getX(), normal.getY(), normal.getZ())
+                .normal(pose.last(), normal.getX(), normal.getY(), normal.getZ())
                 .endVertex();
     }
 }
