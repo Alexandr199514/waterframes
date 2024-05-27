@@ -77,9 +77,9 @@ public abstract class DisplayBlock extends BaseEntityBlock implements BlockGuiCr
         return InteractionResult.SUCCESS;
     }
 
-    @Override public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        return state.getValue(this.getFacing()) == direction;
-    }
+//    @Override public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+//        return state.getValue(this.getFacing()) == direction;
+//    }
 
     @Override protected void registerDefaultState(BlockState state) {
         super.registerDefaultState(state
@@ -123,6 +123,7 @@ public abstract class DisplayBlock extends BaseEntityBlock implements BlockGuiCr
     @Override public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> type) {
         return (l, pos, state, be) -> {
             if (be instanceof DisplayTile tile) {
+                tile.setLevel(l);
                 tile.tick(pos, state);
             }
         };
@@ -147,33 +148,33 @@ public abstract class DisplayBlock extends BaseEntityBlock implements BlockGuiCr
         return state.getValue(POWER);
     }
 
-    @Override public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        if (state.getValue(LIT)) {
-            return level.getMaxLightLevel();
-            // TODO: this needs be synchronized on data refresh
-//            if (level.getBlockEntity(pos) instanceof DisplayTile tile) {
-//                return (tile.data.brightness / 255) * level.getMaxLightLevel();
-//            }
-        } else {
-            return 0;
-        }
-    }
+//    @Override public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+//        if (state.getValue(LIT)) {
+//            return level.getMaxLightLevel();
+//            // TODO: this needs be synchronized on data refresh
+////            if (level.getBlockEntity(pos) instanceof DisplayTile tile) {
+////                return (tile.data.brightness / 255) * level.getMaxLightLevel();
+////            }
+//        } else {
+//            return 0;
+//        }
+//    }
 
     @Override public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
         return 0f;
     }
 
-    @Override public PushReaction getPistonPushReaction(BlockState pState) {
-        return PushReaction.DESTROY;
-    }
+//    @Override public PushReaction getPistonPushReaction(BlockState pState) {
+//        return PushReaction.DESTROY;
+//    }
 
     @Override public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(true) : super.getFluidState(state);
     }
 
-    @Override public BlockState rotate(BlockState state, LevelAccessor world, BlockPos pos, Rotation rotation) {
-        return this.rotate(state, rotation);
-    }
+//    @Override public BlockState rotate(BlockState state, LevelAccessor world, BlockPos pos, Rotation rotation) {
+//        return this.rotate(state, rotation);
+//    }
 
     @Override public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(this.getFacing(), rotation.rotate(state.getValue(this.getFacing())));

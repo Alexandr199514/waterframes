@@ -1,5 +1,18 @@
+# 2.0.10 + BETA FABRIC
+- ✨ Mod is now in BETA
+
 # UPDATE 2.0.10
-- 🐛 Fixed crash on server-side using `/waterframes whitelist` 
+- 🐛 Fixed crash on serve-side using `/waterframes whitelist` 
+
+# 2.0.9 + ALPHA FABRIC
+- 🐛 Ensure level never was null
+    - 🛠️ This patch doesn't work with banner, please avoid reporting compat issues with it
+- 🐛 Fixed crash trying to load a client class on the server-side
+- 🐛 Fixed missing config
+    - 🛠️ Now you can edit config using ``/cmdconfig``
+- 🐛 Fixed missing ``Environment`` annotations on client-side stuff
+- 🐛 Fixed not well configuration on accesswidener (blame fabric)
+- 🐛 Fixed broken jar (is not remapped)
 
 # UPDATE 2.0.9
 - ✨ Increased max limit of some config fields (`waterframes-server.toml`)

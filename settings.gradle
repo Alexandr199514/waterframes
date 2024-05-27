@@ -11,12 +11,12 @@ pluginManagement {
             content { includeGroup "curse.maven" }
         }
         maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        maven {
             name = 'MinecraftForge'
             url = 'https://maven.minecraftforge.net/'
         }
     }
-}
-
-plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }

@@ -10,6 +10,9 @@ import me.srrapero720.waterframes.common.network.packets.*;
 import me.srrapero720.watermedia.api.image.ImageAPI;
 import me.srrapero720.watermedia.api.image.ImageCache;
 import me.srrapero720.watermedia.api.math.MathAPI;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,8 +25,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.box.AlignedBox;
@@ -33,9 +34,9 @@ import static me.srrapero720.waterframes.WaterFrames.LOGGER;
 public class DisplayTile extends BlockEntity {
     public final DisplayData data;
     public final DisplayCaps caps;
-    @OnlyIn(Dist.CLIENT) public ImageCache imageCache;
-    @OnlyIn(Dist.CLIENT) public TextureDisplay display;
-    @OnlyIn(Dist.CLIENT) private boolean isReleased;
+    @Environment(EnvType.CLIENT) public ImageCache imageCache;
+    @Environment(EnvType.CLIENT) public TextureDisplay display;
+    @Environment(EnvType.CLIENT) private boolean isReleased;
 
     public DisplayTile(DisplayData data, DisplayCaps caps, BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -43,7 +44,7 @@ public class DisplayTile extends BlockEntity {
         this.caps = caps;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public TextureDisplay requestDisplay() {
         if (!this.data.active || (this.data.url.isEmpty() && display != null)) {
             this.cleanDisplay();
@@ -95,9 +96,10 @@ public class DisplayTile extends BlockEntity {
     public void load(CompoundTag nbt) {
         this.data.load(nbt, this);
         super.load(nbt);
+        this.setDirty();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void cleanDisplay() {
         if (this.display != null) {
             this.display.release();
@@ -105,20 +107,20 @@ public class DisplayTile extends BlockEntity {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void release() {
         this.cleanDisplay();
         this.isReleased = true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public AlignedBox getRenderBox() {
         return this.caps.getBox(this, getDirection(), getAttachedFace(), true);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public AABB getRenderBoundingBox() {
+        // This doesn't works on fabric
         return this.getRenderBox().getBB(this.getBlockPos());
     }
 
@@ -126,12 +128,6 @@ public class DisplayTile extends BlockEntity {
     public void setRemoved() {
         if (this.isClient()) this.release();
         super.setRemoved();
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        if (this.isClient()) this.release();
-        super.onChunkUnloaded();
     }
 
     public void setActive(boolean clientSide, boolean mode) {
@@ -264,12 +260,6 @@ public class DisplayTile extends BlockEntity {
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        this.data.load(tag, this);
-        this.setDirty();
-    }
-
-    @Override
     public CompoundTag getUpdateTag() {
         return this.saveWithFullMetadata();
     }
@@ -287,6 +277,12 @@ public class DisplayTile extends BlockEntity {
             LOGGER.warn("Cannot be stored block data, level is NULL");
         }
     }
+
+//
+//    public void setDirty(Player player) {
+//        player.level.blockEntityChanged(this.worldPosition);
+//        player.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
+//    }
 
     public static AlignedBox getBasicBox(DisplayTile tile) {
         final var facing = Facing.get(tile.getDirection());
@@ -335,5 +331,12 @@ public class DisplayTile extends BlockEntity {
             }
         }
         return box;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void init() {
+        ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
+            if (blockEntity instanceof DisplayTile tile) tile.release();
+        });
     }
 }
