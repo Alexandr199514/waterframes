@@ -70,7 +70,7 @@ public class RemoteControl extends Item implements ItemGuiCreator {
         }
 
         var blockPos = new BlockPos(data.x(), data.y(), data.z());
-        var dimension = new ResourceLocation(data.dimension());
+        var dimension = ResourceLocation.parse(data.dimension());
 
         if (level.getBlockEntity(blockPos) instanceof DisplayTile) {
             if (!level.dimension().location().equals(dimension) || !Vec3.atCenterOf(blockPos).closerThan(player.position(), WFConfig.maxRcDis())) {
@@ -79,7 +79,7 @@ public class RemoteControl extends Item implements ItemGuiCreator {
             } else {
                 var tag = new CompoundTag();
                 tag.putString("dimension", data.dimension());
-                tag.putIntArray("pos", data.getPos());
+                tag.putIntArray("position", data.getPos());
 
                 GuiCreator.ITEM_OPENER.open(tag, player, hand);
                 return InteractionResultHolder.success(stack);

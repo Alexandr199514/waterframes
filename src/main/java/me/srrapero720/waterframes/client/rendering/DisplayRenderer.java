@@ -3,6 +3,7 @@ package me.srrapero720.waterframes.client.rendering;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import me.srrapero720.waterframes.WFConfig;
 import me.srrapero720.waterframes.WaterFrames;
 import me.srrapero720.waterframes.client.display.DisplayControl;
@@ -45,7 +46,6 @@ public class DisplayRenderer implements BlockEntityRenderer<DisplayTile> {
         if (display == null || !WFConfig.keepsRendering()) return;
 
         // STORE AND CLEAN ANY "EARLY" STATE
-        RenderCore.cleanShader();
         RenderCore.bufferPrepare();
         RenderCore.cleanShader();
 
@@ -79,10 +79,11 @@ public class DisplayRenderer implements BlockEntityRenderer<DisplayTile> {
         // POST RENDERING
         pose.popPose();
         RenderCore.cleanShader();
-
+        RenderCore.unbindTex();
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();
         RenderSystem.bindTexture(0);
+        Tesselator.getInstance().clear();
     }
 
     public void render(PoseStack pose, DisplayTile tile, TextureDisplay display, AlignedBox box, BoxFace face, int a, int r, int g, int b) {
@@ -93,10 +94,7 @@ public class DisplayRenderer implements BlockEntityRenderer<DisplayTile> {
         final boolean back = this.inBack(tile);
 
         if (display.isLoading()) {
-            RenderCore.bufferBegin();
             this.renderLoading(pose, tile, box, face, front, back, flipX, flipY);
-            RenderCore.bufferEnd();
-            return;
         }
 
         if (!display.canRender()) return;
@@ -110,17 +108,17 @@ public class DisplayRenderer implements BlockEntityRenderer<DisplayTile> {
 
             if (back)
                 RenderCore.vertexB(pose, box, face, flipX, flipY, a, r, g, b);
-            RenderCore.bufferEnd();
+
+            RenderCore.bufferFinish();
         }
 
         if (display.isBuffering()) {
-            RenderCore.bufferBegin();
             this.renderLoading(pose, tile, box, face, front, back, flipX, flipY);
-            RenderCore.bufferEnd();
         }
     }
 
     public void renderLoading(PoseStack pose, DisplayTile tile, AlignedBox alignedBox, BoxFace face, boolean front, boolean back, boolean flipX, boolean flipY) {
+        RenderCore.bufferBegin();
         RenderCore.bindTex(LOADING_TEX.texture(DisplayControl.getTicks(), MathAPI.tickToMs(WaterFrames.deltaFrames()), true));
 
         AlignedBox box = new AlignedBox(alignedBox);
@@ -159,6 +157,7 @@ public class DisplayRenderer implements BlockEntityRenderer<DisplayTile> {
 
         if (back)
             RenderCore.vertexB(pose, box, face, flipX, flipY, 255, 255, 255, 255);
+        RenderCore.bufferFinish();
     }
 
     public boolean inFront(DisplayTile tile) {

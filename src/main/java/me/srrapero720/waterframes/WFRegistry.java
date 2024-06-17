@@ -119,8 +119,8 @@ public class WFRegistry {
         @SubscribeEvent
         public static void init(FMLCommonSetupEvent event) {
             // DATA
-            DATA_NET.registerType(DataSyncPacket.class, DataSyncPacket::new);
-            DATA_NET.registerType(PermLevelPacket.class, PermLevelPacket::new); // neoteam sucks
+            CONTROL_NET.registerType(DataSyncPacket.class, DataSyncPacket::new);
+            CONTROL_NET.registerType(PermLevelPacket.class, PermLevelPacket::new); // neoteam sucks
 
             // CONTROLS
             CONTROL_NET.registerType(ActivePacket.class, ActivePacket::new);

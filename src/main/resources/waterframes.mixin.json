@@ -6,9 +6,6 @@
   "minVersion": "0.8.5",
   "client": [],
   "mixins": [
-    "PlayerListMixin",
-    "creativecore.CompiledTextMixin",
-    "creativecore.GuiLabelMixin",
-    "creativecore.GuiSliderMixin"
+    "PlayerListMixin"
   ]
 }

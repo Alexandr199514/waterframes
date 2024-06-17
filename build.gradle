@@ -3,7 +3,7 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 plugins {
     id 'java'
     id 'idea'
-    id 'net.neoforged.gradle.userdev' version '7.0.124'
+    id 'net.neoforged.gradle.userdev' version '7.0.+'
     id 'com.modrinth.minotaur' version '2.+'
     id 'net.darkhax.curseforgegradle' version '1.1.+'
 }
@@ -37,7 +37,7 @@ runs {
         systemProperty  'log4j.appender.Console', "org.apache.log4j.ConsoleAppender"
         systemProperty  'terminal.jline', 'true'
 
-        modSource project.sourceSets.main
+        modSource sourceSets.main
     }
 
     client {
@@ -74,7 +74,7 @@ dependencies {
 
     //DEPENDENCIES
     implementation fileTree('libs') { include '*.jar' }
-    implementation "com.github.SrRapero720.watermedia:build:$watermediaversion"
+    implementation "com.github.WaterMediaTeam.watermedia:build:$watermediaversion"
     implementation "curse.maven:creativecore-257814:$creativecoreversion"
 
     // UTIL
